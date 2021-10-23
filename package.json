@@ -1,0 +1,25 @@
+{
+  "name": "nodejs_week6",
+  "version": "1.0.0",
+  "description": "This is practice for week6",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shtatiana/nodejs_week6.git"
+  },
+  "keywords": [],
+  "author": "Tatiana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shtatiana/nodejs_week6"
+  },
+  "homepage": "https://github.com/shtatiana/nodejs_week6",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
