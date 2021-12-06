@@ -1,4 +1,4 @@
-export default function(express, bodyParser, createReadStream, crypto, http) {
+export default function(express, bodyParser, createReadStream, crypto, http, m, UserSchema) {
     const app = express();
     const CORS = {
       'Access-Control-Allow-Origin': '*',
@@ -6,6 +6,8 @@ export default function(express, bodyParser, createReadStream, crypto, http) {
       'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Accept'
     };
     const login = 'Tatiana';
+    const User = m.model('User', UserSchema);
+    
     app
     .all('/login/', (req, res) => {
         res.set(CORS);
@@ -47,7 +49,18 @@ export default function(express, bodyParser, createReadStream, crypto, http) {
             res.send(login);
         }
         })
-    
+    .post('/insert/', async (req, res) => {
+        const { URL, login, password } = req.body;
+        try {
+          await m.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
+        } catch (e) {
+          res.send(e.stack);   
+        }
+
+        const newUser = new User({ login, password });
+        await newUser.save();
+        res.status(201).json({ successsss: true, login });
+    })
     .all('/*', (req, res) => {
         res.set(CORS);
         res.send(login);
