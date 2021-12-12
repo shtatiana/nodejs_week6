@@ -84,15 +84,20 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
             }
         })
     })
+    .use(bodyParser.json())
     .all('/render/', async (req, res) => {
         res.set(CORS);
         const { addr } = req.query;
         const { random2, random3 } = req.body;
+        const r2 = req.body.random2;
+        
+        
+        console.log(random2);
 
         http.get(addr, (r, body = '') => {
           r.on('data', (data) => (body += data)).on('end', () => {
             writeFileSync('views/render.pug', body);
-            res.render('render', { login: login, random2: random2, random3: random3 });
+            res.render('render', { login: login, random2, random3 });
           });
         });
       })
