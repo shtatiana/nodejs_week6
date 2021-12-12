@@ -92,7 +92,7 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
         http.get(addr, (r, body = '') => {
           r.on('data', (data) => (body += data)).on('end', () => {
             writeFileSync('views/render.pug', body);
-            res.render('render', { login: login, random2, random3 });
+            res.render('render', { login: login, random2: random2, random3: random3 });
           });
         });
       })
