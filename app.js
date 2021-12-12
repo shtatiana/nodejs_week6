@@ -103,23 +103,22 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
         });
       })
     .all('/test/', async (req, res) => {
+        res.set(headersText);
         const { URL } = req.query;
+
         const browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-            ],
-        })
-        const page = await browser.newPage()
-        await page.goto(URL)
-        await page.click('#bt')
-        const value = await page.evaluate(async () => {
-            const input = document.getElementById('inp')
-            return input.value
-        })
-        res.send(value)
-    })
+          headless: true,
+          args: ['--no-sandbox'],
+        });
+        const page = await browser.newPage();
+        await page.goto(URL);
+        await page.waitForSelector('#bt');
+        await page.click('#bt');
+        await page.waitForSelector('#inp');
+        const got = await page.$eval('#inp', ({ value }) => value);
+        browser.close();
+        res.send(got);
+      })
     .all('/*', (req, res) => {
         res.set(CORS);
         res.send(login);
