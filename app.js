@@ -87,6 +87,7 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
     .use(bodyParser.json())
     .all('/render/', async (req, res) => {
         res.set(CORS);
+        res.set(headersText);
         const { addr } = req.query;
         const { random2, random3 } = req.body;
         const r2 = req.body.random2;
@@ -102,7 +103,7 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
         });
       })
     .all('/test/', async (req, res) => {
-        const { URL } = req.query
+        const { URL } = req.query;
         const browser = await puppeteer.launch({
             headless: true,
             args: [
