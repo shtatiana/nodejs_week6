@@ -21,6 +21,8 @@
   "homepage": "https://github.com/shtatiana/nodejs_week6",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^6.0.14"
+    "mongoose": "^6.0.14",
+    "pug": "^3.0.2",
+    "puppeteer": "^13.0.0"
   }
 }
