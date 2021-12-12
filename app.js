@@ -76,6 +76,14 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
             }
         })
     })
+    .all('/wordpress/wp-json/wp/v2/posts/', (r) => {
+        r.res.set(CORS).send({
+            id: 1,
+            title: {
+                rendered: login
+            }
+        })
+    })
     .all('/render/', async (req, res) => {
         res.set(CORS);
         const { addr } = req.query;
