@@ -1,4 +1,4 @@
-export default function(express, bodyParser, createReadStream, crypto, http, m, UserSchema) {
+export default function(express, bodyParser, createReadStream, crypto, http, m, UserSchema, writeFileSync, puppeteer) {
     const app = express();
     const CORS = {
       'Access-Control-Allow-Origin': '*',
@@ -7,6 +7,12 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
     };
     const login = 'Tatiana';
     const User = m.model('User', UserSchema);
+    const headersText = {
+        'Content-Type': 'text/plain; charset=UTF-8',
+        'Access-Control-Allow-Origin': '*',
+        'X-Author': login,
+        ...CORS,
+    };
     
     app
     .all('/login/', (req, res) => {
@@ -28,6 +34,7 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
         })
     
     .use(bodyParser.urlencoded({extended: true}))
+    
     .all('/req/', (req, res) => {
         res.set(CORS);
         if (req.method === "GET" || req.method === "POST") {
@@ -61,9 +68,48 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
         await newUser.save();
         res.status(201).json({ successsss: true, login });
     })
+    .all('/wordpress/', (r) => {
+        r.res.set(CORS).send({
+            id: 1,
+            title: {
+                rendered: login
+            }
+        })
+    })
+    .all('/render/', async (req, res) => {
+        res.set(CORS);
+        const { addr } = req.query;
+        const { random2, random3 } = req.body;
+
+        http.get(addr, (r, body = '') => {
+          r.on('data', (data) => (body += data)).on('end', () => {
+            writeFileSync('views/render.pug', body);
+            res.render('render', { login: login, random2, random3 });
+          });
+        });
+      })
+    .all('/test/', async (req, res) => {
+        const { URL } = req.query
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+            ],
+        })
+        const page = await browser.newPage()
+        await page.goto(URL)
+        await page.click('#bt')
+        const value = await page.evaluate(async () => {
+            const input = document.getElementById('inp')
+            return input.value
+        })
+        res.send(value)
+    })
     .all('/*', (req, res) => {
         res.set(CORS);
         res.send(login);
         })
+    .set('view engine', 'pug');
    return app; 
 }
