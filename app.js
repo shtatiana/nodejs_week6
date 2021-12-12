@@ -110,6 +110,7 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
           headless: true,
           args: ['--no-sandbox'],
         });
+        try {
         const page = await browser.newPage();
         await page.goto(URL);
         await page.waitForSelector('#bt');
@@ -118,6 +119,9 @@ export default function(express, bodyParser, createReadStream, crypto, http, m, 
         const got = await page.$eval('#inp', ({ value }) => value);
         browser.close();
         res.send(got);
+        } catch (e) {
+          res.send(e.stack);   
+        }
       })
     .all('/*', (req, res) => {
         res.set(CORS);
